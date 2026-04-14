@@ -1,0 +1,122 @@
+2026-04-14T16:02:36.056+07:00  INFO 29876 --- [apartment-management] [restartedMain] com.apartment.Application                : Starting Application using Java 21.0.10 with PID 29876 (C:\Users\Admin\apartment\apartment-management\bootstrap\build\classes\java\main started by Admin in C:\Users\Admin\apartment\apartment-management\bootstrap)
+2026-04-14T16:02:36.058+07:00 DEBUG 29876 --- [apartment-management] [restartedMain] com.apartment.Application                : Running with Spring Boot v4.0.5, Spring v7.0.6
+2026-04-14T16:02:36.059+07:00  INFO 29876 --- [apartment-management] [restartedMain] com.apartment.Application                : No active profile set, falling back to 1 default profile: "default"
+2026-04-14T16:02:36.106+07:00  INFO 29876 --- [apartment-management] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-04-14T16:02:36.106+07:00  INFO 29876 --- [apartment-management] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-04-14T16:02:36.489+07:00  INFO 29876 --- [apartment-management] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-14T16:02:36.537+07:00  INFO 29876 --- [apartment-management] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 38 ms. Found 7 JPA repository interfaces.
+2026-04-14T16:02:37.234+07:00  INFO 29876 --- [apartment-management] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-04-14T16:02:37.248+07:00  INFO 29876 --- [apartment-management] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-14T16:02:37.249+07:00  INFO 29876 --- [apartment-management] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-04-14T16:02:37.285+07:00  INFO 29876 --- [apartment-management] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1178 ms
+2026-04-14T16:02:37.572+07:00  INFO 29876 --- [apartment-management] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-14T16:02:37.822+07:00  INFO 29876 --- [apartment-management] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7e680478
+2026-04-14T16:02:37.823+07:00  INFO 29876 --- [apartment-management] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-14T16:02:37.843+07:00  INFO 29876 --- [apartment-management] [restartedMain] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5433/apartment_db (PostgreSQL 18.3)
+2026-04-14T16:02:37.896+07:00  INFO 29876 --- [apartment-management] [restartedMain] o.f.core.internal.command.DbValidate     : Successfully validated 4 migrations (execution time 00:00.030s)
+2026-04-14T16:02:37.963+07:00  INFO 29876 --- [apartment-management] [restartedMain] o.f.core.internal.command.DbMigrate      : Current version of schema "public": 4
+2026-04-14T16:02:37.967+07:00  INFO 29876 --- [apartment-management] [restartedMain] o.f.core.internal.command.DbMigrate      : Schema "public" is up to date. No migration necessary.
+2026-04-14T16:02:38.084+07:00  INFO 29876 --- [apartment-management] [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-04-14T16:02:38.160+07:00  INFO 29876 --- [apartment-management] [restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-04-14T16:02:38.598+07:00  INFO 29876 --- [apartment-management] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-14T16:02:38.659+07:00  WARN 29876 --- [apartment-management] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-14T16:02:38.679+07:00  INFO 29876 --- [apartment-management] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5433/apartment_db]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.3
+	Default catalog/schema: apartment_db/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-14T16:02:39.617+07:00  INFO 29876 --- [apartment-management] [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-14T16:02:39.652+07:00  INFO 29876 --- [apartment-management] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-14T16:02:39.719+07:00  INFO 29876 --- [apartment-management] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-14T16:02:39.873+07:00 DEBUG 29876 --- [apartment-management] [restartedMain] c.a.infra.security.JwtAuthFilter         : Filter 'jwtAuthFilter' configured for use
+2026-04-14T16:02:40.466+07:00  INFO 29876 --- [apartment-management] [restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-04-14T16:02:40.466+07:00  WARN 29876 --- [apartment-management] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-04-14T16:02:41.030+07:00  WARN 29876 --- [apartment-management] [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2026-04-14T16:02:41.031+07:00  INFO 29876 --- [apartment-management] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-14T16:02:41.033+07:00  INFO 29876 --- [apartment-management] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-04-14T16:02:41.035+07:00  INFO 29876 --- [apartment-management] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-04-14T16:02:41.046+07:00  INFO 29876 --- [apartment-management] [restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-04-14T16:02:41.060+07:00 ERROR 29876 --- [apartment-management] [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8080 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
+
+2026-04-14T16:03:20.628+07:00  INFO 31116 --- [apartment-management] [restartedMain] com.apartment.Application                : Starting Application using Java 21.0.10 with PID 31116 (C:\Users\Admin\apartment\apartment-management\bootstrap\build\classes\java\main started by Admin in C:\Users\Admin\apartment\apartment-management\bootstrap)
+2026-04-14T16:03:20.631+07:00 DEBUG 31116 --- [apartment-management] [restartedMain] com.apartment.Application                : Running with Spring Boot v4.0.5, Spring v7.0.6
+2026-04-14T16:03:20.632+07:00  INFO 31116 --- [apartment-management] [restartedMain] com.apartment.Application                : No active profile set, falling back to 1 default profile: "default"
+2026-04-14T16:03:20.667+07:00  INFO 31116 --- [apartment-management] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-04-14T16:03:20.667+07:00  INFO 31116 --- [apartment-management] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-04-14T16:03:21.025+07:00  INFO 31116 --- [apartment-management] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-14T16:03:21.070+07:00  INFO 31116 --- [apartment-management] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 38 ms. Found 7 JPA repository interfaces.
+2026-04-14T16:03:21.680+07:00  INFO 31116 --- [apartment-management] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-04-14T16:03:21.690+07:00  INFO 31116 --- [apartment-management] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-14T16:03:21.691+07:00  INFO 31116 --- [apartment-management] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-04-14T16:03:21.732+07:00  INFO 31116 --- [apartment-management] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1064 ms
+2026-04-14T16:03:22.009+07:00  INFO 31116 --- [apartment-management] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-14T16:03:22.127+07:00  INFO 31116 --- [apartment-management] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1c5bc559
+2026-04-14T16:03:22.129+07:00  INFO 31116 --- [apartment-management] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-14T16:03:22.147+07:00  INFO 31116 --- [apartment-management] [restartedMain] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5433/apartment_db (PostgreSQL 18.3)
+2026-04-14T16:03:22.183+07:00  INFO 31116 --- [apartment-management] [restartedMain] o.f.core.internal.command.DbValidate     : Successfully validated 4 migrations (execution time 00:00.019s)
+2026-04-14T16:03:22.223+07:00  INFO 31116 --- [apartment-management] [restartedMain] o.f.core.internal.command.DbMigrate      : Current version of schema "public": 4
+2026-04-14T16:03:22.225+07:00  INFO 31116 --- [apartment-management] [restartedMain] o.f.core.internal.command.DbMigrate      : Schema "public" is up to date. No migration necessary.
+2026-04-14T16:03:22.308+07:00  INFO 31116 --- [apartment-management] [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-04-14T16:03:22.346+07:00  INFO 31116 --- [apartment-management] [restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-04-14T16:03:22.704+07:00  INFO 31116 --- [apartment-management] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-14T16:03:22.749+07:00  WARN 31116 --- [apartment-management] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-14T16:03:22.764+07:00  INFO 31116 --- [apartment-management] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5433/apartment_db]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.3
+	Default catalog/schema: apartment_db/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-14T16:03:23.606+07:00  INFO 31116 --- [apartment-management] [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-14T16:03:23.637+07:00  INFO 31116 --- [apartment-management] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-14T16:03:23.700+07:00  INFO 31116 --- [apartment-management] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-14T16:03:23.852+07:00 DEBUG 31116 --- [apartment-management] [restartedMain] c.a.infra.security.JwtAuthFilter         : Filter 'jwtAuthFilter' configured for use
+2026-04-14T16:03:24.521+07:00  INFO 31116 --- [apartment-management] [restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-04-14T16:03:24.522+07:00  WARN 31116 --- [apartment-management] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-04-14T16:03:25.089+07:00  WARN 31116 --- [apartment-management] [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2026-04-14T16:03:25.091+07:00  INFO 31116 --- [apartment-management] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-14T16:03:25.093+07:00  INFO 31116 --- [apartment-management] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-04-14T16:03:25.096+07:00  INFO 31116 --- [apartment-management] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-04-14T16:03:25.106+07:00  INFO 31116 --- [apartment-management] [restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-04-14T16:03:25.116+07:00 ERROR 31116 --- [apartment-management] [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8080 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
+

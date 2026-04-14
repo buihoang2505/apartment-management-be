@@ -1,0 +1,69 @@
+package com.apartment.interfaces.user;
+
+import com.apartment.app.user.command.*;
+import com.apartment.app.user.dto.UserResponse;
+import com.apartment.app.user.handler.UserCommandHandler;
+import com.apartment.app.user.handler.UserQueryHandler;
+import com.apartment.interfaces.shared.response.CommonResponse;
+import com.apartment.interfaces.user.request.CreateUserRequest;
+import com.apartment.interfaces.user.request.ResetPasswordRequest;
+import com.apartment.interfaces.user.request.UpdateUserRequest;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/admin/users")
+@RequiredArgsConstructor
+public class UserController {
+
+    private final UserCommandHandler userCommandHandler;
+    private final UserQueryHandler userQueryHandler;
+
+    @GetMapping
+    public ResponseEntity<CommonResponse<List<UserResponse>>> getAll() {
+        return ResponseEntity.ok(CommonResponse.ok(userQueryHandler.findAll()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CommonResponse<UserResponse>> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(CommonResponse.ok(userQueryHandler.findById(id)));
+    }
+
+    @PostMapping
+    public ResponseEntity<CommonResponse<UserResponse>> create(@Valid @RequestBody CreateUserRequest request) {
+        CreateUserCommand cmd = new CreateUserCommand(
+                request.username(), request.password(), request.fullName(),
+                request.email(), request.phone(), request.role());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(CommonResponse.ok("Tạo người dùng thành công", userCommandHandler.handle(cmd)));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CommonResponse<UserResponse>> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateUserRequest request) {
+        UpdateUserCommand cmd = new UpdateUserCommand(
+                id, request.fullName(), request.email(), request.phone(), request.role(), request.active());
+        return ResponseEntity.ok(CommonResponse.ok("Cập nhật người dùng thành công", userCommandHandler.handle(cmd)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CommonResponse<Void>> delete(@PathVariable UUID id) {
+        userCommandHandler.deleteUser(id);
+        return ResponseEntity.ok(CommonResponse.ok("Xóa người dùng thành công", null));
+    }
+
+    @PatchMapping("/{id}/reset-password")
+    public ResponseEntity<CommonResponse<Void>> resetPassword(
+            @PathVariable UUID id,
+            @Valid @RequestBody ResetPasswordRequest request) {
+        userCommandHandler.handle(new ResetPasswordCommand(id, request.newPassword()));
+        return ResponseEntity.ok(CommonResponse.ok("Đặt lại mật khẩu thành công", null));
+    }
+}

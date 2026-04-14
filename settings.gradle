@@ -1,1 +1,2 @@
 rootProject.name = 'apartment-management'
+include 'bootstrap', 'domain', 'app', 'infra', 'interface'
