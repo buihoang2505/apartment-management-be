@@ -20,20 +20,20 @@ public class AuditLogController {
 
     @GetMapping
     public ResponseEntity<CommonResponse<Page<AuditLogResponse>>> getAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size) {
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "50") int size) {
         return ResponseEntity.ok(CommonResponse.ok(auditLogQueryHandler.findAll(page, size)));
     }
 
     @GetMapping("/by-entity")
     public ResponseEntity<CommonResponse<List<AuditLogResponse>>> getByEntity(
-            @RequestParam String entityType,
-            @RequestParam String entityId) {
+            @RequestParam("entityType") String entityType,
+            @RequestParam("entityId") String entityId) {
         return ResponseEntity.ok(CommonResponse.ok(auditLogQueryHandler.findByEntity(entityType, entityId)));
     }
 
     @GetMapping("/by-user/{userId}")
-    public ResponseEntity<CommonResponse<List<AuditLogResponse>>> getByUser(@PathVariable UUID userId) {
+    public ResponseEntity<CommonResponse<List<AuditLogResponse>>> getByUser(@PathVariable("userId") UUID userId) {
         return ResponseEntity.ok(CommonResponse.ok(auditLogQueryHandler.findByUser(userId)));
     }
 }

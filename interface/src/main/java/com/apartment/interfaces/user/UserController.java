@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,13 +26,19 @@ public class UserController {
     private final UserCommandHandler userCommandHandler;
     private final UserQueryHandler userQueryHandler;
 
+    @GetMapping("/me")
+    public ResponseEntity<CommonResponse<UserResponse>> getMe() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(CommonResponse.ok(userQueryHandler.findByUsername(username)));
+    }
+
     @GetMapping
     public ResponseEntity<CommonResponse<List<UserResponse>>> getAll() {
         return ResponseEntity.ok(CommonResponse.ok(userQueryHandler.findAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CommonResponse<UserResponse>> getById(@PathVariable UUID id) {
+    public ResponseEntity<CommonResponse<UserResponse>> getById(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(CommonResponse.ok(userQueryHandler.findById(id)));
     }
 
@@ -46,7 +53,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse<UserResponse>> update(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateUserRequest request) {
         UpdateUserCommand cmd = new UpdateUserCommand(
                 id, request.fullName(), request.email(), request.phone(), request.role(), request.active());
@@ -54,14 +61,14 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<CommonResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
         userCommandHandler.deleteUser(id);
         return ResponseEntity.ok(CommonResponse.ok("Xóa người dùng thành công", null));
     }
 
     @PatchMapping("/{id}/reset-password")
     public ResponseEntity<CommonResponse<Void>> resetPassword(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody ResetPasswordRequest request) {
         userCommandHandler.handle(new ResetPasswordCommand(id, request.newPassword()));
         return ResponseEntity.ok(CommonResponse.ok("Đặt lại mật khẩu thành công", null));

@@ -9,6 +9,7 @@ import com.apartment.interfaces.shared.response.CommonResponse;
 import com.apartment.interfaces.zone.request.CreateBuildingRequest;
 import com.apartment.interfaces.zone.request.CreateZoneRequest;
 import com.apartment.interfaces.zone.request.UpdateBuildingRequest;
+import com.apartment.interfaces.zone.request.UpdateZoneRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,11 @@ public class ZoneController {
         return ResponseEntity.ok(CommonResponse.ok(zoneQueryHandler.findAll()));
     }
 
+    @GetMapping("/zones/{id}")
+    public ResponseEntity<CommonResponse<ZoneResponse>> getById(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(CommonResponse.ok(zoneQueryHandler.findById(id)));
+    }
+
     @PostMapping("/zones")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommonResponse<ZoneResponse>> create(@Valid @RequestBody CreateZoneRequest request) {
@@ -39,15 +45,31 @@ public class ZoneController {
                 .body(CommonResponse.ok("Tạo phân khu thành công", zoneCommandHandler.handle(cmd)));
     }
 
+    @PutMapping("/zones/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CommonResponse<ZoneResponse>> update(
+            @PathVariable("id") UUID id,
+            @Valid @RequestBody UpdateZoneRequest request) {
+        UpdateZoneCommand cmd = new UpdateZoneCommand(id, request.name(), request.code(), request.description());
+        return ResponseEntity.ok(CommonResponse.ok("Cập nhật phân khu thành công", zoneCommandHandler.handle(cmd)));
+    }
+
+    @DeleteMapping("/zones/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
+        zoneCommandHandler.deleteZone(id);
+        return ResponseEntity.ok(CommonResponse.ok("Xóa phân khu thành công", null));
+    }
+
     @GetMapping("/zones/{id}/buildings")
-    public ResponseEntity<CommonResponse<List<BuildingResponse>>> getBuildings(@PathVariable UUID id) {
+    public ResponseEntity<CommonResponse<List<BuildingResponse>>> getBuildings(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(CommonResponse.ok(zoneQueryHandler.findBuildingsByZone(id)));
     }
 
     @PostMapping("/zones/{id}/buildings")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommonResponse<BuildingResponse>> createBuilding(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody CreateBuildingRequest request) {
         CreateBuildingCommand cmd = new CreateBuildingCommand(
                 id, request.name(), request.code(), request.type(), request.totalFloors(), request.description());
@@ -58,7 +80,7 @@ public class ZoneController {
     @PutMapping("/zones/buildings/{buildingId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommonResponse<BuildingResponse>> updateBuilding(
-            @PathVariable UUID buildingId,
+            @PathVariable("buildingId") UUID buildingId,
             @Valid @RequestBody UpdateBuildingRequest request) {
         UpdateBuildingCommand cmd = new UpdateBuildingCommand(
                 buildingId, request.name(), request.code(), request.type(), request.totalFloors(), request.description());
@@ -67,7 +89,7 @@ public class ZoneController {
 
     @DeleteMapping("/zones/buildings/{buildingId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CommonResponse<Void>> deleteBuilding(@PathVariable UUID buildingId) {
+    public ResponseEntity<CommonResponse<Void>> deleteBuilding(@PathVariable("buildingId") UUID buildingId) {
         zoneCommandHandler.handle(new DeleteBuildingCommand(buildingId));
         return ResponseEntity.ok(CommonResponse.ok("Xóa tòa nhà thành công", null));
     }

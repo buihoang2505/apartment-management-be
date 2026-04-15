@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,19 +33,24 @@ public class ApartmentController {
 
     @GetMapping
     public ResponseEntity<CommonResponse<Page<ApartmentResponse>>> getAll(
-            @RequestParam(required = false) UUID zoneId,
-            @RequestParam(required = false) UUID buildingId,
-            @RequestParam(required = false) ApartmentStatus status,
-            @RequestParam(required = false) ApartmentType type,
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(value = "zoneId", required = false) UUID zoneId,
+            @RequestParam(value = "buildingId", required = false) UUID buildingId,
+            @RequestParam(value = "status", required = false) ApartmentStatus status,
+            @RequestParam(value = "type", required = false) ApartmentType type,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "minArea", required = false) BigDecimal minArea,
+            @RequestParam(value = "maxArea", required = false) BigDecimal maxArea,
+            @RequestParam(value = "minPrice", required = false) BigDecimal minPrice,
+            @RequestParam(value = "maxPrice", required = false) BigDecimal maxPrice,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size) {
         return ResponseEntity.ok(CommonResponse.ok(
-                apartmentQueryHandler.findAll(zoneId, buildingId, status, type, search, page, size)));
+                apartmentQueryHandler.findAll(zoneId, buildingId, status, type, search,
+                        minArea, maxArea, minPrice, maxPrice, page, size)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CommonResponse<ApartmentResponse>> getById(@PathVariable UUID id) {
+    public ResponseEntity<CommonResponse<ApartmentResponse>> getById(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(CommonResponse.ok(apartmentQueryHandler.findById(id)));
     }
 
@@ -58,7 +64,7 @@ public class ApartmentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse<ApartmentResponse>> update(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateApartmentRequest request) {
         UpdateApartmentCommand cmd = toUpdateCommand(id, request);
         return ResponseEntity.ok(CommonResponse.ok("Cập nhật căn hộ thành công", apartmentCommandHandler.handle(cmd)));
@@ -66,21 +72,21 @@ public class ApartmentController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CommonResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
         apartmentCommandHandler.handle(new DeleteApartmentCommand(id));
         return ResponseEntity.ok(CommonResponse.ok("Xóa căn hộ thành công", null));
     }
 
     @GetMapping("/{id}/status-history")
     public ResponseEntity<CommonResponse<List<ApartmentStatusHistoryResponse>>> getStatusHistory(
-            @PathVariable UUID id) {
+            @PathVariable("id") UUID id) {
         return ResponseEntity.ok(CommonResponse.ok(apartmentQueryHandler.findStatusHistory(id)));
     }
 
     @PatchMapping("/{id}/move")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommonResponse<ApartmentResponse>> moveBuilding(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody MoveApartmentRequest request) {
         MoveApartmentCommand cmd = new MoveApartmentCommand(id, request.newBuildingId(), request.note());
         return ResponseEntity.ok(CommonResponse.ok("Chuyển tòa nhà thành công", apartmentCommandHandler.handle(cmd)));

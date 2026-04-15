@@ -31,7 +31,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CommonResponse<PortfolioResponse>> getById(@PathVariable UUID id) {
+    public ResponseEntity<CommonResponse<PortfolioResponse>> getById(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(CommonResponse.ok(portfolioQueryHandler.findById(id)));
     }
 
@@ -48,7 +48,7 @@ public class PortfolioController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommonResponse<PortfolioResponse>> update(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody UpdatePortfolioRequest request) {
         UpdatePortfolioCommand cmd = new UpdatePortfolioCommand(
                 id, request.name(), request.description(), request.zoneIds());
@@ -57,7 +57,7 @@ public class PortfolioController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CommonResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
         portfolioCommandHandler.handle(new DeletePortfolioCommand(id));
         return ResponseEntity.ok(CommonResponse.ok("Xóa danh mục thành công", null));
     }
