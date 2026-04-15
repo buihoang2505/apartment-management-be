@@ -26,6 +26,12 @@ public class ZoneQueryHandler {
                 .toList();
     }
 
+    public ZoneResponse findById(UUID id) {
+        return zoneRepository.findById(id)
+                .map(ZoneResponse::from)
+                .orElseThrow(() -> new ZoneNotFoundException(id));
+    }
+
     public List<BuildingResponse> findBuildingsByZone(UUID zoneId) {
         if (!zoneRepository.existsById(zoneId)) {
             throw new ZoneNotFoundException(zoneId);

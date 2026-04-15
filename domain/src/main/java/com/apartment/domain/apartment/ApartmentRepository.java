@@ -22,4 +22,18 @@ public interface ApartmentRepository extends JpaRepository<Apartment, UUID>,
 
     @Query("SELECT COUNT(a) FROM Apartment a WHERE a.createdAt >= :from AND a.createdAt < :to")
     long countCreatedBetween(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
+
+    @Query("SELECT COUNT(a) FROM Apartment a WHERE a.building.zone.id = :zoneId")
+    long countByZoneId(@Param("zoneId") UUID zoneId);
+
+    @Query("SELECT a.status, COUNT(a) FROM Apartment a WHERE a.building.zone.id = :zoneId GROUP BY a.status")
+    List<Object[]> countByStatusAndZoneId(@Param("zoneId") UUID zoneId);
+
+    @Query("SELECT a.apartmentType, COUNT(a) FROM Apartment a WHERE a.building.zone.id = :zoneId AND a.apartmentType IS NOT NULL GROUP BY a.apartmentType")
+    List<Object[]> countByTypeAndZoneId(@Param("zoneId") UUID zoneId);
+
+    @Query("SELECT COUNT(a) FROM Apartment a WHERE a.building.zone.id = :zoneId AND a.createdAt >= :from AND a.createdAt < :to")
+    long countByZoneIdAndCreatedBetween(@Param("zoneId") UUID zoneId,
+                                        @Param("from") LocalDateTime from,
+                                        @Param("to") LocalDateTime to);
 }

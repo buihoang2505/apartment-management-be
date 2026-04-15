@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,30 +18,44 @@ public class DashboardQueryHandler {
 
     private final ApartmentRepository apartmentRepository;
 
-    public DashboardStatsResponse getStats() {
-        long total = apartmentRepository.count();
+    public DashboardStatsResponse getStats(UUID zoneId) {
+        boolean filtered = zoneId != null;
+
+        long total = filtered
+                ? apartmentRepository.countByZoneId(zoneId)
+                : apartmentRepository.count();
 
         Map<String, Long> byStatus = new HashMap<>();
-        for (Object[] row : apartmentRepository.countByStatus()) {
+        for (Object[] row : filtered
+                ? apartmentRepository.countByStatusAndZoneId(zoneId)
+                : apartmentRepository.countByStatus()) {
             byStatus.put(row[0].toString(), (Long) row[1]);
         }
 
         Map<String, Long> byType = new HashMap<>();
-        for (Object[] row : apartmentRepository.countByType()) {
+        for (Object[] row : filtered
+                ? apartmentRepository.countByTypeAndZoneId(zoneId)
+                : apartmentRepository.countByType()) {
             byType.put(row[0].toString(), (Long) row[1]);
         }
 
         YearMonth current = YearMonth.now();
         YearMonth previous = current.minusMonths(1);
 
-        long thisMonth = apartmentRepository.countCreatedBetween(
-                current.atDay(1).atStartOfDay(),
-                current.atEndOfMonth().atTime(23, 59, 59)
-        );
-        long lastMonth = apartmentRepository.countCreatedBetween(
-                previous.atDay(1).atStartOfDay(),
-                previous.atEndOfMonth().atTime(23, 59, 59)
-        );
+        long thisMonth = filtered
+                ? apartmentRepository.countByZoneIdAndCreatedBetween(zoneId,
+                        current.atDay(1).atStartOfDay(),
+                        current.atEndOfMonth().atTime(23, 59, 59))
+                : apartmentRepository.countCreatedBetween(
+                        current.atDay(1).atStartOfDay(),
+                        current.atEndOfMonth().atTime(23, 59, 59));
+        long lastMonth = filtered
+                ? apartmentRepository.countByZoneIdAndCreatedBetween(zoneId,
+                        previous.atDay(1).atStartOfDay(),
+                        previous.atEndOfMonth().atTime(23, 59, 59))
+                : apartmentRepository.countCreatedBetween(
+                        previous.atDay(1).atStartOfDay(),
+                        previous.atEndOfMonth().atTime(23, 59, 59));
 
         double percentage = lastMonth == 0
                 ? (thisMonth > 0 ? 100.0 : 0.0)

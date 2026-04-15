@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,8 +28,12 @@ public class ApartmentQueryHandler {
     private final ApartmentStatusHistoryRepository statusHistoryRepository;
 
     public Page<ApartmentResponse> findAll(UUID zoneId, UUID buildingId, ApartmentStatus status,
-                                           ApartmentType type, String search, int page, int size) {
-        Specification<Apartment> spec = buildSpec(zoneId, buildingId, status, type, search);
+                                           ApartmentType type, String search,
+                                           BigDecimal minArea, BigDecimal maxArea,
+                                           BigDecimal minPrice, BigDecimal maxPrice,
+                                           int page, int size) {
+        Specification<Apartment> spec = buildSpec(zoneId, buildingId, status, type, search,
+                minArea, maxArea, minPrice, maxPrice);
         PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return apartmentRepository.findAll(spec, pageable).map(ApartmentResponse::from);
     }
@@ -53,13 +58,19 @@ public class ApartmentQueryHandler {
 
     private Specification<Apartment> buildSpec(UUID zoneId, UUID buildingId,
                                                ApartmentStatus status, ApartmentType type,
-                                               String search) {
+                                               String search,
+                                               BigDecimal minArea, BigDecimal maxArea,
+                                               BigDecimal minPrice, BigDecimal maxPrice) {
         Specification<Apartment> spec = fetchAssociations();
         if (zoneId != null)              spec = spec.and(byZone(zoneId));
         if (buildingId != null)          spec = spec.and(byBuilding(buildingId));
         if (status != null)              spec = spec.and(byStatus(status));
         if (type != null)                spec = spec.and(byType(type));
         if (StringUtils.hasText(search)) spec = spec.and(bySearch(search));
+        if (minArea != null)             spec = spec.and(byMinArea(minArea));
+        if (maxArea != null)             spec = spec.and(byMaxArea(maxArea));
+        if (minPrice != null)            spec = spec.and(byMinPrice(minPrice));
+        if (maxPrice != null)            spec = spec.and(byMaxPrice(maxPrice));
         return spec;
     }
 
@@ -99,5 +110,21 @@ public class ApartmentQueryHandler {
                 cb.like(cb.lower(root.get("unitCode")), pattern),
                 cb.like(cb.lower(root.get("displayCode")), pattern)
         );
+    }
+
+    private Specification<Apartment> byMinArea(BigDecimal minArea) {
+        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("area"), minArea);
+    }
+
+    private Specification<Apartment> byMaxArea(BigDecimal maxArea) {
+        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("area"), maxArea);
+    }
+
+    private Specification<Apartment> byMinPrice(BigDecimal minPrice) {
+        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("sellingPrice"), minPrice);
+    }
+
+    private Specification<Apartment> byMaxPrice(BigDecimal maxPrice) {
+        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("sellingPrice"), maxPrice);
     }
 }

@@ -6,6 +6,8 @@ import com.apartment.app.zone.dto.ZoneResponse;
 import com.apartment.app.zone.exception.BuildingNotFoundException;
 import com.apartment.app.zone.exception.ZoneNotFoundException;
 import com.apartment.domain.zone.*;
+
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,5 +74,24 @@ public class ZoneCommandHandler {
             throw new BuildingNotFoundException(cmd.buildingId());
         }
         buildingRepository.deleteById(cmd.buildingId());
+    }
+
+    public ZoneResponse handle(UpdateZoneCommand cmd) {
+        Zone zone = zoneRepository.findById(cmd.id())
+                .orElseThrow(() -> new ZoneNotFoundException(cmd.id()));
+        if (!zone.getCode().equals(cmd.code()) && zoneRepository.existsByCode(cmd.code())) {
+            throw new IllegalArgumentException("Mã phân khu '" + cmd.code() + "' đã tồn tại");
+        }
+        zone.setName(cmd.name());
+        zone.setCode(cmd.code());
+        zone.setDescription(cmd.description());
+        return ZoneResponse.from(zoneRepository.save(zone));
+    }
+
+    public void deleteZone(UUID id) {
+        if (!zoneRepository.existsById(id)) {
+            throw new ZoneNotFoundException(id);
+        }
+        zoneRepository.deleteById(id);
     }
 }

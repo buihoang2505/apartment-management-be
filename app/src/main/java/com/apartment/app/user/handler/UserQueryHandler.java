@@ -28,4 +28,10 @@ public class UserQueryHandler {
                 .map(UserResponse::from)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
+
+    public UserResponse findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(UserResponse::from)
+                .orElseThrow(() -> new UserNotFoundException(username));
+    }
 }

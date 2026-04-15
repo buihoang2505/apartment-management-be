@@ -6,4 +6,8 @@ public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(UUID id) {
         super("Người dùng không tồn tại: " + id);
     }
+
+    public UserNotFoundException(String username) {
+        super("Người dùng không tồn tại: " + username);
+    }
 }
