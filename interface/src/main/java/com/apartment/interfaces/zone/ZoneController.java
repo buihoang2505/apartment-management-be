@@ -57,7 +57,7 @@ public class ZoneController {
     @DeleteMapping("/zones/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
-        zoneCommandHandler.deleteZone(id);
+        zoneCommandHandler.handle(new DeleteZoneCommand(id));
         return ResponseEntity.ok(CommonResponse.ok("Xóa phân khu thành công", null));
     }
 
