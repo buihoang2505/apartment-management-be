@@ -1,0 +1,8 @@
+{
+  "// note": "File này KHÔNG đẩy lên GitHub — dùng cho override cá nhân",
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep *)"
+    ]
+  }
+}

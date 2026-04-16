@@ -1,0 +1,18 @@
+# Design Patterns
+
+## CQRS
+- **Command** = thao tác thay đổi state (create, update, delete)
+- **Query** = đọc dữ liệu, `@Transactional(readOnly = true)`
+- Không mix command + query trong cùng 1 handler
+
+## Response
+- Dùng static factory method: `PortfolioResponse.from(entity)`
+- Không expose entity ra ngoài Controller layer
+
+## Exception Handling
+- Mỗi domain có exception riêng kế thừa RuntimeException
+- Format: `<Entity>NotFoundException`, `<Entity>AlreadyExistsException`
+
+## Audit
+- Mọi write operation quan trọng nên log vào `AuditLog`
+- Ghi: action, entityType, entityId, oldValue (JSON), newValue (JSON), ipAddress
