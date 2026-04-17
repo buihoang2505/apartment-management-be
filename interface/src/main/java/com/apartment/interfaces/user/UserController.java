@@ -8,6 +8,8 @@ import com.apartment.interfaces.shared.response.CommonResponse;
 import com.apartment.interfaces.user.request.CreateUserRequest;
 import com.apartment.interfaces.user.request.ResetPasswordRequest;
 import com.apartment.interfaces.user.request.UpdateUserRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Users", description = "Quản lý người dùng")
 @RestController
 @RequestMapping("/admin/users")
 @RequiredArgsConstructor

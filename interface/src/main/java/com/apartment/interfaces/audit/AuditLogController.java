@@ -3,6 +3,8 @@ package com.apartment.interfaces.audit;
 import com.apartment.app.audit.dto.AuditLogResponse;
 import com.apartment.app.audit.handler.AuditLogQueryHandler;
 import com.apartment.interfaces.shared.response.CommonResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Audit Logs", description = "Lịch sử thao tác hệ thống")
 @RestController
 @RequestMapping("/admin/audit-logs")
 @RequiredArgsConstructor

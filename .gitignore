@@ -46,3 +46,8 @@ qodana.yaml
 # Logs
 logs/
 *.log
+
+*.md.txt
+*.claude.zip
+.claude/CLAUDE.local.md
+.claude/settings.local.json

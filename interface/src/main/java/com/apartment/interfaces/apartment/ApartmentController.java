@@ -3,14 +3,18 @@ package com.apartment.interfaces.apartment;
 import com.apartment.app.apartment.command.*;
 import com.apartment.app.apartment.dto.ApartmentResponse;
 import com.apartment.app.apartment.dto.ApartmentStatusHistoryResponse;
+import com.apartment.app.apartment.dto.ApartmentTypeResponse;
 import com.apartment.app.apartment.handler.ApartmentCommandHandler;
 import com.apartment.app.apartment.handler.ApartmentQueryHandler;
 import com.apartment.domain.apartment.ApartmentStatus;
 import com.apartment.domain.apartment.ApartmentType;
+import java.util.Arrays;
 import com.apartment.interfaces.apartment.request.CreateApartmentRequest;
 import com.apartment.interfaces.apartment.request.MoveApartmentRequest;
 import com.apartment.interfaces.apartment.request.UpdateApartmentRequest;
 import com.apartment.interfaces.shared.response.CommonResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Apartments", description = "Quản lý căn hộ")
 @RestController
 @RequestMapping("/apartments")
 @RequiredArgsConstructor
@@ -30,6 +35,15 @@ public class ApartmentController {
 
     private final ApartmentCommandHandler apartmentCommandHandler;
     private final ApartmentQueryHandler apartmentQueryHandler;
+
+    @Operation(summary = "Lấy danh sách loại căn hộ")
+    @GetMapping("/types")
+    public ResponseEntity<CommonResponse<List<ApartmentTypeResponse>>> getTypes() {
+        var types = Arrays.stream(ApartmentType.values())
+                .map(ApartmentTypeResponse::from)
+                .toList();
+        return ResponseEntity.ok(CommonResponse.ok(types));
+    }
 
     @GetMapping
     public ResponseEntity<CommonResponse<Page<ApartmentResponse>>> getAll(

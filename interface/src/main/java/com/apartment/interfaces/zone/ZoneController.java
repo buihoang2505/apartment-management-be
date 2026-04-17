@@ -10,6 +10,8 @@ import com.apartment.interfaces.zone.request.CreateBuildingRequest;
 import com.apartment.interfaces.zone.request.CreateZoneRequest;
 import com.apartment.interfaces.zone.request.UpdateBuildingRequest;
 import com.apartment.interfaces.zone.request.UpdateZoneRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Zones & Buildings", description = "Quản lý phân khu và tòa nhà")
 @RestController
 @RequiredArgsConstructor
 public class ZoneController {

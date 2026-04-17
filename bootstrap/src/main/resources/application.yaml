@@ -35,6 +35,13 @@ app:
     issuer: apartment-management
     audience: apartment-management-users
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+  api-docs:
+    path: /v3/api-docs
+  packages-to-scan: com.apartment.interfaces
+
 logging:
   file:
     name: logs/app.log
