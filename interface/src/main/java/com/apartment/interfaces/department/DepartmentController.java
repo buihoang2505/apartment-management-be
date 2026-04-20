@@ -48,7 +48,7 @@ public class DepartmentController {
 
     @Operation(summary = "Tạo phòng ban mới")
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<DepartmentResponse>> create(
             @Valid @RequestBody CreateDepartmentRequest request) {
         var cmd = new CreateDepartmentCommand(request.name(), request.code(), request.description());
@@ -58,7 +58,7 @@ public class DepartmentController {
 
     @Operation(summary = "Cập nhật phòng ban")
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<DepartmentResponse>> update(
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateDepartmentRequest request) {
@@ -68,7 +68,7 @@ public class DepartmentController {
 
     @Operation(summary = "Xóa phòng ban")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
         departmentCommandHandler.handle(new DeleteDepartmentCommand(id));
         return ResponseEntity.ok(CommonResponse.ok("Xóa phòng ban thành công", null));

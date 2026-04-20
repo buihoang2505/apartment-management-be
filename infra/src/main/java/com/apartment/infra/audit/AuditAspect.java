@@ -47,10 +47,23 @@ public class AuditAspect {
     }
 
     private String resolveAction(ProceedingJoinPoint pjp) {
-        MethodSignature sig = (MethodSignature) pjp.getSignature();
-        String handlerClass = pjp.getTarget().getClass().getSimpleName();
-        String methodName = sig.getName();
-        return handlerClass + "." + methodName;
+        String methodName = ((MethodSignature) pjp.getSignature()).getName();
+        Object[] args = pjp.getArgs();
+
+        if ("handle".equals(methodName) && args.length > 0 && args[0] != null) {
+            String cmdName = args[0].getClass().getSimpleName().replace("Command", "");
+            return toScreamingSnake(cmdName);
+        }
+        // deleteUser, deleteEmployee, etc.
+        return toScreamingSnake(methodName);
+    }
+
+    // "CreateDepartment" → "CREATE_DEPARTMENT", "deleteUser" → "DELETE_USER"
+    private String toScreamingSnake(String camelCase) {
+        return camelCase
+                .replaceAll("([A-Z])", "_$1")
+                .toUpperCase()
+                .replaceAll("^_", "");
     }
 
     private com.apartment.domain.user.User getCurrentUser() {

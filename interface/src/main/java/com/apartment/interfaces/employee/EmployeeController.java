@@ -57,7 +57,7 @@ public class EmployeeController {
 
     @Operation(summary = "Tạo nhân viên mới")
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<EmployeeResponse>> create(
             @Valid @RequestBody CreateEmployeeRequest request) {
         var cmd = new CreateEmployeeCommand(
@@ -69,7 +69,7 @@ public class EmployeeController {
 
     @Operation(summary = "Cập nhật nhân viên")
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<EmployeeResponse>> update(
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateEmployeeRequest request) {
@@ -81,7 +81,7 @@ public class EmployeeController {
 
     @Operation(summary = "Xóa nhân viên")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
         employeeCommandHandler.handle(new DeleteEmployeeCommand(id));
         return ResponseEntity.ok(CommonResponse.ok("Xóa nhân viên thành công", null));

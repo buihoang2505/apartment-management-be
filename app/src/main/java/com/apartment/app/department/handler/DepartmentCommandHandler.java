@@ -8,6 +8,7 @@ import com.apartment.app.department.exception.DepartmentNotFoundException;
 import com.apartment.app.department.exception.DuplicateDepartmentCodeException;
 import com.apartment.domain.department.Department;
 import com.apartment.domain.department.DepartmentRepository;
+import com.apartment.domain.employee.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DepartmentCommandHandler {
 
     private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Transactional
     public DepartmentResponse handle(CreateDepartmentCommand cmd) {
@@ -28,7 +30,8 @@ public class DepartmentCommandHandler {
                 .code(cmd.code())
                 .description(cmd.description())
                 .build();
-        return DepartmentResponse.from(departmentRepository.save(department));
+        var saved = departmentRepository.save(department);
+        return DepartmentResponse.from(saved, employeeRepository.countByDepartment_Id(saved.getId()));
     }
 
     @Transactional
@@ -41,7 +44,8 @@ public class DepartmentCommandHandler {
         department.setName(cmd.name());
         department.setCode(cmd.code());
         department.setDescription(cmd.description());
-        return DepartmentResponse.from(departmentRepository.save(department));
+        var saved = departmentRepository.save(department);
+        return DepartmentResponse.from(saved, employeeRepository.countByDepartment_Id(saved.getId()));
     }
 
     @Transactional

@@ -40,7 +40,7 @@ public class ZoneController {
     }
 
     @PostMapping("/zones")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<ZoneResponse>> create(@Valid @RequestBody CreateZoneRequest request) {
         CreateZoneCommand cmd = new CreateZoneCommand(request.name(), request.code(), request.description());
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -48,7 +48,7 @@ public class ZoneController {
     }
 
     @PutMapping("/zones/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<ZoneResponse>> update(
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateZoneRequest request) {
@@ -57,7 +57,7 @@ public class ZoneController {
     }
 
     @DeleteMapping("/zones/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
         zoneCommandHandler.handle(new DeleteZoneCommand(id));
         return ResponseEntity.ok(CommonResponse.ok("Xóa phân khu thành công", null));
@@ -69,7 +69,7 @@ public class ZoneController {
     }
 
     @PostMapping("/zones/{id}/buildings")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<BuildingResponse>> createBuilding(
             @PathVariable("id") UUID id,
             @Valid @RequestBody CreateBuildingRequest request) {
@@ -80,7 +80,7 @@ public class ZoneController {
     }
 
     @PutMapping("/zones/buildings/{buildingId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<BuildingResponse>> updateBuilding(
             @PathVariable("buildingId") UUID buildingId,
             @Valid @RequestBody UpdateBuildingRequest request) {
@@ -91,7 +91,7 @@ public class ZoneController {
     }
 
     @DeleteMapping("/zones/buildings/{buildingId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<Void>> deleteBuilding(@PathVariable("buildingId") UUID buildingId) {
         zoneCommandHandler.handle(new DeleteBuildingCommand(buildingId));
         return ResponseEntity.ok(CommonResponse.ok("Xóa tòa nhà thành công", null));

@@ -1,8 +1,14 @@
 {
-  "// note": "File này KHÔNG đẩy lên GitHub — dùng cho override cá nhân",
   "permissions": {
     "allow": [
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(curl -s -X POST http://localhost:8080/api/auth/login -H 'Content-Type: application/json' -d '{\"username\":\"admin\",\"password\":\"admin123\"}')",
+      "Bash(netstat -ano)",
+      "Bash(awk '{print $5}')",
+      "Bash(read pid *)",
+      "Bash(cmd //c 'taskkill /PID __TRACKED_VAR__ /F')",
+      "Read(//tmp/**)"
     ]
-  }
+  },
+  "// note": "File này KHÔNG đẩy lên GitHub — dùng cho override cá nhân"
 }

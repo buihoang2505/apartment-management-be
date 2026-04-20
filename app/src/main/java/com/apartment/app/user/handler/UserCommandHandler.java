@@ -31,7 +31,7 @@ public class UserCommandHandler {
                 .fullName(cmd.fullName())
                 .email(cmd.email())
                 .phone(cmd.phone())
-                .role(cmd.role() != null ? cmd.role() : "USER")
+                .role(cmd.role() != null ? cmd.role() : "MANAGER")
                 .active(true)
                 .build();
         return UserResponse.from(userRepository.save(user));

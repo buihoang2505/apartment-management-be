@@ -43,7 +43,7 @@ public class PortfolioController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<PortfolioResponse>> create(
             @Valid @RequestBody CreatePortfolioRequest request) {
         CreatePortfolioCommand cmd = new CreatePortfolioCommand(
@@ -53,7 +53,7 @@ public class PortfolioController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<PortfolioResponse>> update(
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdatePortfolioRequest request) {
@@ -63,7 +63,7 @@ public class PortfolioController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
         portfolioCommandHandler.handle(new DeletePortfolioCommand(id));
         return ResponseEntity.ok(CommonResponse.ok("Xóa danh mục thành công", null));

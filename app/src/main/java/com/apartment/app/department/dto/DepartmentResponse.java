@@ -10,15 +10,17 @@ public record DepartmentResponse(
         String name,
         String code,
         String description,
+        long employeeCount,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
-    public static DepartmentResponse from(Department department) {
+    public static DepartmentResponse from(Department department, long employeeCount) {
         return new DepartmentResponse(
                 department.getId(),
                 department.getName(),
                 department.getCode(),
                 department.getDescription(),
+                employeeCount,
                 department.getCreatedAt(),
                 department.getUpdatedAt()
         );

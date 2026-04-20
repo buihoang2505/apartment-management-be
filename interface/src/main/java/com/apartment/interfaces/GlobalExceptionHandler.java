@@ -11,6 +11,7 @@ import com.apartment.app.user.exception.UserNotFoundException;
 import com.apartment.app.zone.exception.BuildingNotFoundException;
 import com.apartment.app.zone.exception.ZoneNotFoundException;
 import com.apartment.interfaces.shared.response.CommonResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -48,6 +49,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse<Void>> handleDuplicate(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(CommonResponse.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<CommonResponse<Void>> handleDataIntegrity(DataIntegrityViolationException ex) {
+        String msg = ex.getMessage() != null && ex.getMessage().contains("unique constraint")
+                ? "Dữ liệu đã tồn tại (vi phạm ràng buộc unique)"
+                : "Vi phạm ràng buộc dữ liệu";
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(CommonResponse.error(msg));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

@@ -69,6 +69,7 @@ public class ApartmentController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<ApartmentResponse>> create(
             @Valid @RequestBody CreateApartmentRequest request) {
         CreateApartmentCommand cmd = toCreateCommand(request);
@@ -77,6 +78,7 @@ public class ApartmentController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<ApartmentResponse>> update(
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateApartmentRequest request) {
@@ -85,7 +87,7 @@ public class ApartmentController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
         apartmentCommandHandler.handle(new DeleteApartmentCommand(id));
         return ResponseEntity.ok(CommonResponse.ok("Xóa căn hộ thành công", null));
@@ -98,7 +100,7 @@ public class ApartmentController {
     }
 
     @PatchMapping("/{id}/move")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<CommonResponse<ApartmentResponse>> moveBuilding(
             @PathVariable("id") UUID id,
             @Valid @RequestBody MoveApartmentRequest request) {
