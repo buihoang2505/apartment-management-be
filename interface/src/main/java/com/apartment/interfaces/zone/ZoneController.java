@@ -10,7 +10,6 @@ import com.apartment.interfaces.zone.request.CreateBuildingRequest;
 import com.apartment.interfaces.zone.request.CreateZoneRequest;
 import com.apartment.interfaces.zone.request.UpdateBuildingRequest;
 import com.apartment.interfaces.zone.request.UpdateZoneRequest;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -86,7 +85,8 @@ public class ZoneController {
             @PathVariable("buildingId") UUID buildingId,
             @Valid @RequestBody UpdateBuildingRequest request) {
         UpdateBuildingCommand cmd = new UpdateBuildingCommand(
-                buildingId, request.name(), request.code(), request.type(), request.totalFloors(), request.description());
+                buildingId, request.name(), request.code(), request.type(), request.totalFloors(),
+                request.description());
         return ResponseEntity.ok(CommonResponse.ok("Cập nhật tòa nhà thành công", zoneCommandHandler.handle(cmd)));
     }
 

@@ -3,7 +3,6 @@ package com.apartment.interfaces.audit;
 import com.apartment.app.audit.dto.AuditLogResponse;
 import com.apartment.app.audit.handler.AuditLogQueryHandler;
 import com.apartment.interfaces.shared.response.CommonResponse;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

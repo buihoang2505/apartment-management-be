@@ -8,7 +8,6 @@ import com.apartment.interfaces.shared.response.CommonResponse;
 import com.apartment.interfaces.user.request.CreateUserRequest;
 import com.apartment.interfaces.user.request.ResetPasswordRequest;
 import com.apartment.interfaces.user.request.UpdateUserRequest;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

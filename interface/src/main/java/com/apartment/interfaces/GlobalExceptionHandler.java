@@ -3,6 +3,9 @@ package com.apartment.interfaces;
 import com.apartment.app.apartment.exception.ApartmentNotFoundException;
 import com.apartment.app.apartment.exception.DuplicateUnitCodeException;
 import com.apartment.app.auth.exception.InvalidCredentialsException;
+import com.apartment.app.department.exception.DepartmentNotFoundException;
+import com.apartment.app.department.exception.DuplicateDepartmentCodeException;
+import com.apartment.app.employee.exception.EmployeeNotFoundException;
 import com.apartment.app.portfolio.exception.PortfolioNotFoundException;
 import com.apartment.app.user.exception.UserNotFoundException;
 import com.apartment.app.zone.exception.BuildingNotFoundException;
@@ -30,7 +33,9 @@ public class GlobalExceptionHandler {
             ZoneNotFoundException.class,
             BuildingNotFoundException.class,
             PortfolioNotFoundException.class,
-            UserNotFoundException.class
+            UserNotFoundException.class,
+            DepartmentNotFoundException.class,
+            EmployeeNotFoundException.class
     })
     public ResponseEntity<CommonResponse<Void>> handleNotFound(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -39,8 +44,8 @@ public class GlobalExceptionHandler {
 
     // ── 400 / 409 Bad Request / Conflict ─────────────────────────────────────
 
-    @ExceptionHandler(DuplicateUnitCodeException.class)
-    public ResponseEntity<CommonResponse<Void>> handleDuplicate(DuplicateUnitCodeException ex) {
+    @ExceptionHandler({DuplicateUnitCodeException.class, DuplicateDepartmentCodeException.class})
+    public ResponseEntity<CommonResponse<Void>> handleDuplicate(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(CommonResponse.error(ex.getMessage()));
     }
