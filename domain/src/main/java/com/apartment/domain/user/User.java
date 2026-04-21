@@ -32,4 +32,7 @@ public class User extends BaseEntity {
     @Column(name = "is_active", nullable = false)
     @Builder.Default
     private boolean active = true;
+
+    @Column(name = "avatar_url", length = 500)
+    private String avatarUrl;
 }

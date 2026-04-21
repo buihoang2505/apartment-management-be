@@ -8,5 +8,5 @@ public record DashboardStatsResponse(
         Map<String, Long> byType,
         GrowthStats growth
 ) {
-    public record GrowthStats(long thisMonth, long lastMonth, double percentage) {}
+    public record GrowthStats(long thisMonth, long lastMonth, Double percentage, String label) {}
 }

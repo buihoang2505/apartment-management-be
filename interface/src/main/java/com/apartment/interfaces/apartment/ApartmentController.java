@@ -1,6 +1,7 @@
 package com.apartment.interfaces.apartment;
 
 import com.apartment.app.apartment.command.*;
+import com.apartment.app.apartment.dto.ApartmentImageResponse;
 import com.apartment.app.apartment.dto.ApartmentResponse;
 import com.apartment.app.apartment.dto.ApartmentStatusHistoryResponse;
 import com.apartment.app.apartment.dto.ApartmentTypeResponse;
@@ -19,9 +20,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -35,6 +38,7 @@ public class ApartmentController {
 
     private final ApartmentCommandHandler apartmentCommandHandler;
     private final ApartmentQueryHandler apartmentQueryHandler;
+    private final com.apartment.app.shared.port.FileStoragePort fileStoragePort;
 
     @Operation(summary = "Lấy danh sách loại căn hộ")
     @GetMapping("/types")
@@ -106,6 +110,34 @@ public class ApartmentController {
             @Valid @RequestBody MoveApartmentRequest request) {
         MoveApartmentCommand cmd = new MoveApartmentCommand(id, request.newBuildingId(), request.note());
         return ResponseEntity.ok(CommonResponse.ok("Chuyển tòa nhà thành công", apartmentCommandHandler.handle(cmd)));
+    }
+
+    @Operation(summary = "Upload ảnh căn hộ")
+    @PostMapping(value = "/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    public ResponseEntity<CommonResponse<List<ApartmentImageResponse>>> uploadImages(
+            @PathVariable("id") UUID id,
+            @RequestParam("files") List<MultipartFile> files) {
+        List<String> urls = files.stream()
+                .map(f -> fileStoragePort.uploadFile(f, "apartments"))
+                .toList();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(CommonResponse.ok("Upload ảnh thành công",
+                        apartmentCommandHandler.addImages(id, urls)));
+    }
+
+    @Operation(summary = "Xóa ảnh căn hộ")
+    @DeleteMapping("/{id}/images/{imageId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    public ResponseEntity<CommonResponse<Void>> deleteImage(
+            @PathVariable("id") UUID id,
+            @PathVariable("imageId") UUID imageId) {
+        String url = apartmentQueryHandler.getImageUrl(id, imageId);
+        if (url != null) {
+            fileStoragePort.deleteFile(url);
+        }
+        apartmentCommandHandler.deleteImage(id, imageId);
+        return ResponseEntity.ok(CommonResponse.ok("Xóa ảnh thành công", null));
     }
 
     // ── mappers ──────────────────────────────────────────────────────────────

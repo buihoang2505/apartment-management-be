@@ -1,7 +1,9 @@
 package com.apartment.app.apartment.handler;
 
 import com.apartment.app.apartment.command.*;
+import com.apartment.app.apartment.dto.ApartmentImageResponse;
 import com.apartment.app.apartment.dto.ApartmentResponse;
+import com.apartment.app.apartment.exception.ApartmentImageNotFoundException;
 import com.apartment.app.apartment.exception.ApartmentNotFoundException;
 import com.apartment.app.apartment.exception.DuplicateUnitCodeException;
 import com.apartment.app.zone.exception.BuildingNotFoundException;
@@ -16,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,7 @@ import java.util.Set;
 public class ApartmentCommandHandler {
 
     private final ApartmentRepository apartmentRepository;
+    private final ApartmentImageRepository apartmentImageRepository;
     private final BuildingRepository buildingRepository;
     private final ApartmentStatusHistoryRepository statusHistoryRepository;
     private final UserRepository userRepository;
@@ -128,6 +133,28 @@ public class ApartmentCommandHandler {
                 .orElseThrow(() -> new BuildingNotFoundException(cmd.newBuildingId()));
         apartment.setBuilding(newBuilding);
         return ApartmentResponse.from(apartmentRepository.save(apartment));
+    }
+
+    public List<ApartmentImageResponse> addImages(UUID apartmentId, List<String> urls) {
+        Apartment apartment = apartmentRepository.findById(apartmentId)
+                .orElseThrow(() -> new ApartmentNotFoundException(apartmentId));
+        int nextOrder = apartment.getImages().stream()
+                .mapToInt(ApartmentImage::getSortOrder).max().orElse(-1) + 1;
+        for (int i = 0; i < urls.size(); i++) {
+            apartment.getImages().add(ApartmentImage.builder()
+                    .apartment(apartment)
+                    .url(urls.get(i))
+                    .sortOrder(nextOrder + i)
+                    .build());
+        }
+        apartmentRepository.save(apartment);
+        return apartment.getImages().stream().map(ApartmentImageResponse::from).toList();
+    }
+
+    public void deleteImage(UUID apartmentId, UUID imageId) {
+        ApartmentImage image = apartmentImageRepository.findByIdAndApartment_Id(imageId, apartmentId)
+                .orElseThrow(() -> new ApartmentImageNotFoundException(imageId));
+        apartmentImageRepository.delete(image);
     }
 
     // ── helpers ─────────────────────────────────────────────────────────────

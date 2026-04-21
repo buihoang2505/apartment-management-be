@@ -1,12 +1,15 @@
 package com.apartment.app.audit.handler;
 
 import com.apartment.app.audit.dto.AuditLogResponse;
+import com.apartment.app.audit.query.AuditLogQuery;
+import com.apartment.domain.audit.AuditLog;
 import com.apartment.domain.audit.AuditLogRepository;
 import com.apartment.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,5 +60,15 @@ public class AuditLogQueryHandler {
                 .stream()
                 .map(AuditLogResponse::from)
                 .toList();
+    }
+
+    /**
+     * Admin endpoint: paginated search with optional filters.
+     * The Specification is built in the infra/controller layer and passed in
+     * to keep this handler free of infra dependencies.
+     */
+    public Page<AuditLogResponse> query(AuditLogQuery q, Specification<AuditLog> spec) {
+        var pageable = PageRequest.of(q.page(), q.size(), Sort.by("createdAt").descending());
+        return auditLogRepository.findAll(spec, pageable).map(AuditLogResponse::from);
     }
 }

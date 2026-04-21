@@ -8,13 +8,16 @@ import com.apartment.interfaces.shared.response.CommonResponse;
 import com.apartment.interfaces.user.request.CreateUserRequest;
 import com.apartment.interfaces.user.request.ResetPasswordRequest;
 import com.apartment.interfaces.user.request.UpdateUserRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +30,7 @@ public class UserController {
 
     private final UserCommandHandler userCommandHandler;
     private final UserQueryHandler userQueryHandler;
+    private final com.apartment.app.shared.port.FileStoragePort fileStoragePort;
 
     @GetMapping("/me")
     public ResponseEntity<CommonResponse<UserResponse>> getMe() {
@@ -66,6 +70,26 @@ public class UserController {
     public ResponseEntity<CommonResponse<Void>> delete(@PathVariable("id") UUID id) {
         userCommandHandler.deleteUser(id);
         return ResponseEntity.ok(CommonResponse.ok("Xóa người dùng thành công", null));
+    }
+
+    @Operation(summary = "Upload avatar cho user")
+    @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CommonResponse<UserResponse>> uploadAvatar(
+            @PathVariable("id") UUID id,
+            @RequestParam("file") MultipartFile file) {
+        
+        try {
+            UserResponse currentUser = userQueryHandler.findById(id);
+            if (currentUser.avatarUrl() != null) {
+                fileStoragePort.deleteFile(currentUser.avatarUrl());
+            }
+        } catch (Exception ignored) {
+            // Ngó lơ lỗi nêú user ko tồn tại ở đây, nó sẽ ném lỗi tiếp ở command
+        }
+
+        String url = fileStoragePort.uploadFile(file, "avatars");
+        return ResponseEntity.ok(CommonResponse.ok("Upload avatar thành công",
+                userCommandHandler.updateAvatar(id, url)));
     }
 
     @PatchMapping("/{id}/reset-password")

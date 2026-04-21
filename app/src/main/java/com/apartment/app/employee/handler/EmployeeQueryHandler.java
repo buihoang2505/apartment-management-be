@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,12 +39,14 @@ public class EmployeeQueryHandler {
     }
 
     public List<DepartmentEmployeeCountResponse> countByDepartment() {
+        Map<UUID, Long> countMap = employeeRepository.countGroupByDepartment().stream()
+                .collect(Collectors.toMap(row -> (UUID) row[0], row -> (Long) row[1]));
         return departmentRepository.findAll().stream()
                 .map(dept -> new DepartmentEmployeeCountResponse(
                         dept.getId(),
                         dept.getName(),
                         dept.getCode(),
-                        employeeRepository.countByDepartment_Id(dept.getId())
+                        countMap.getOrDefault(dept.getId(), 0L)
                 ))
                 .toList();
     }

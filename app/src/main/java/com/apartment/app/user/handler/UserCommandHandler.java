@@ -64,4 +64,11 @@ public class UserCommandHandler {
         user.setPassword(passwordEncoder.encode(cmd.newPassword()));
         userRepository.save(user);
     }
+
+    public UserResponse updateAvatar(UUID id, String avatarUrl) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+        user.setAvatarUrl(avatarUrl);
+        return UserResponse.from(userRepository.save(user));
+    }
 }

@@ -44,6 +44,7 @@ public class SecurityConfig {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/apartments/types").permitAll()
                 .requestMatchers(HttpMethod.GET, "/departments/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/employees/**").authenticated()
@@ -56,6 +57,7 @@ public class SecurityConfig {
                         "/v3/api-docs.yaml"
                 ).permitAll()
                 .requestMatchers(HttpMethod.GET, "/admin/users/me").authenticated()
+                .requestMatchers(HttpMethod.POST, "/admin/users/*/avatar").authenticated()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )

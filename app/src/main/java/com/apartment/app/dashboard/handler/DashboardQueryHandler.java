@@ -57,12 +57,17 @@ public class DashboardQueryHandler {
                         previous.atDay(1).atStartOfDay(),
                         previous.atEndOfMonth().atTime(23, 59, 59));
 
-        double percentage = lastMonth == 0
-                ? (thisMonth > 0 ? 100.0 : 0.0)
-                : ((double) (thisMonth - lastMonth) / lastMonth) * 100;
+        Double percentage;
+        String label;
+        if (lastMonth == 0) {
+            percentage = null;
+            label = "Chưa có dữ liệu tháng trước";
+        } else {
+            percentage = Math.round(((double) (thisMonth - lastMonth) / lastMonth) * 100 * 10.0) / 10.0;
+            label = percentage >= 0 ? "Tăng so với tháng trước" : "Giảm so với tháng trước";
+        }
 
         return new DashboardStatsResponse(total, byStatus, byType,
-                new DashboardStatsResponse.GrowthStats(thisMonth, lastMonth,
-                        Math.round(percentage * 10.0) / 10.0));
+                new DashboardStatsResponse.GrowthStats(thisMonth, lastMonth, percentage, label));
     }
 }

@@ -13,6 +13,7 @@ public record UserResponse(
         String phone,
         String role,
         boolean active,
+        String avatarUrl,
         LocalDateTime createdAt
 ) {
     public static UserResponse from(User user) {
@@ -24,6 +25,7 @@ public record UserResponse(
                 user.getPhone(),
                 user.getRole(),
                 user.isActive(),
+                user.getAvatarUrl(),
                 user.getCreatedAt()
         );
     }

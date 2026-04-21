@@ -54,6 +54,13 @@ public class ApartmentQueryHandler {
                 .toList();
     }
 
+    public String getImageUrl(UUID apartmentId, UUID imageId) {
+        return apartmentRepository.findById(apartmentId)
+                .flatMap(a -> a.getImages().stream().filter(i -> i.getId().equals(imageId)).findFirst())
+                .map(ApartmentImage::getUrl)
+                .orElse(null);
+    }
+
     // ── Specification builder ────────────────────────────────────────────────
 
     private Specification<Apartment> buildSpec(UUID zoneId, UUID buildingId,
