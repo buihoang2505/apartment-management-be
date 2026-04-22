@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
@@ -21,31 +20,23 @@ public class CloudinaryService implements FileStoragePort {
     @Override
     public String uploadFile(MultipartFile file, String folder) {
         try {
-            if (cloudinary.config.apiSecret == null) {
-                // Fallback or handle when not configured. Exception is better.
-                throw new IllegalStateException("Cloudinary is not configured");
-            }
-
             Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(),
                     ObjectUtils.asMap(
                             "folder", folder,
                             "resource_type", "auto"
                     ));
-
             return uploadResult.get("secure_url").toString();
-        } catch (IOException e) {
-            log.error("Lỗi khi upload file lên Cloudinary: ", e);
-            throw new RuntimeException("Không thể upload file", e);
+        } catch (Exception e) {
+            log.error("Cloudinary upload failed [folder={}]: {}", folder, e.getMessage(), e);
+            throw new RuntimeException("Không thể upload file: " + e.getMessage(), e);
         }
     }
 
     @Override
     public void deleteFile(String url) {
         if (url == null || url.trim().isEmpty()) return;
-        
-        // Cố gắng lấy public ID từ URL
+
         try {
-            if (cloudinary.config.apiSecret == null) return;
             
             String publicId = extractPublicId(url);
             if (publicId != null) {

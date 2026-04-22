@@ -11,12 +11,14 @@ import com.apartment.app.user.exception.UserNotFoundException;
 import com.apartment.app.zone.exception.BuildingNotFoundException;
 import com.apartment.app.zone.exception.ZoneNotFoundException;
 import com.apartment.interfaces.shared.response.CommonResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -87,6 +90,14 @@ public class GlobalExceptionHandler {
                 .body(CommonResponse.error("Tên đăng nhập hoặc mật khẩu không đúng"));
     }
 
+    // ── 415 Unsupported Media Type ────────────────────────────────────────────
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<CommonResponse<Void>> handleUnsupportedMediaType(HttpMediaTypeNotSupportedException ex) {
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .body(CommonResponse.error("Content-Type không hợp lệ. Endpoint upload yêu cầu multipart/form-data"));
+    }
+
     // ── 403 Forbidden ─────────────────────────────────────────────────────────
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -99,7 +110,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonResponse<Void>> handleGeneric(Exception ex) {
+        log.error("Unhandled exception: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(CommonResponse.error("Lỗi hệ thống"));
+                .body(CommonResponse.error("Lỗi hệ thống: " + ex.getMessage()));
     }
 }

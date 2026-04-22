@@ -7,12 +7,16 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ApartmentRepository extends JpaRepository<Apartment, UUID>,
         JpaSpecificationExecutor<Apartment> {
 
     boolean existsByUnitCode(String unitCode);
+
+    @Query("SELECT DISTINCT a FROM Apartment a LEFT JOIN FETCH a.images LEFT JOIN FETCH a.building b LEFT JOIN FETCH b.zone WHERE a.id = :id")
+    Optional<Apartment> findByIdFetched(@Param("id") UUID id);
 
     @Query("SELECT a.status, COUNT(a) FROM Apartment a GROUP BY a.status")
     List<Object[]> countByStatus();

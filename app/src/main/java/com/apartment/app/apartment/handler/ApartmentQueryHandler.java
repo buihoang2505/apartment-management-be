@@ -39,7 +39,7 @@ public class ApartmentQueryHandler {
     }
 
     public ApartmentResponse findById(UUID id) {
-        return apartmentRepository.findById(id)
+        return apartmentRepository.findByIdFetched(id)
                 .map(ApartmentResponse::from)
                 .orElseThrow(() -> new ApartmentNotFoundException(id));
     }
