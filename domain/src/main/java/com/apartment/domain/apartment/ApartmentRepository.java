@@ -1,5 +1,6 @@
 package com.apartment.domain.apartment;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -40,4 +41,7 @@ public interface ApartmentRepository extends JpaRepository<Apartment, UUID>,
     long countByZoneIdAndCreatedBetween(@Param("zoneId") UUID zoneId,
                                         @Param("from") LocalDateTime from,
                                         @Param("to") LocalDateTime to);
+
+    @Query("SELECT a FROM Apartment a WHERE LOWER(a.unitCode) LIKE LOWER(CONCAT('%', :q, '%')) OR LOWER(a.displayCode) LIKE LOWER(CONCAT('%', :q, '%'))")
+    List<Apartment> searchByKeyword(@Param("q") String q, Pageable pageable);
 }

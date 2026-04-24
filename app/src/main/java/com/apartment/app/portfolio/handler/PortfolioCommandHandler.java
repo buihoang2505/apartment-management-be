@@ -3,6 +3,7 @@ package com.apartment.app.portfolio.handler;
 import com.apartment.app.portfolio.command.*;
 import com.apartment.app.portfolio.dto.PortfolioResponse;
 import com.apartment.app.portfolio.exception.PortfolioNotFoundException;
+import com.apartment.app.shared.port.NotificationPort;
 import com.apartment.domain.portfolio.Portfolio;
 import com.apartment.domain.portfolio.PortfolioRepository;
 import com.apartment.domain.zone.Zone;
@@ -20,6 +21,7 @@ public class PortfolioCommandHandler {
 
     private final PortfolioRepository portfolioRepository;
     private final ZoneRepository zoneRepository;
+    private final NotificationPort notificationPort;
 
     public PortfolioResponse handle(CreatePortfolioCommand cmd) {
         Portfolio portfolio = Portfolio.builder()
@@ -32,7 +34,13 @@ public class PortfolioCommandHandler {
             portfolio.getZones().addAll(zones);
         }
 
-        return PortfolioResponse.from(portfolioRepository.save(portfolio));
+        Portfolio saved = portfolioRepository.save(portfolio);
+        notificationPort.push(
+                "Portfolio mới",
+                "Portfolio " + saved.getName() + " vừa được thêm vào hệ thống",
+                "PORTFOLIO",
+                saved.getId().toString());
+        return PortfolioResponse.from(saved);
     }
 
     public PortfolioResponse handle(UpdatePortfolioCommand cmd) {

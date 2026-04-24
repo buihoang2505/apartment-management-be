@@ -5,9 +5,11 @@ import com.apartment.app.user.dto.UserResponse;
 import com.apartment.app.user.handler.UserCommandHandler;
 import com.apartment.app.user.handler.UserQueryHandler;
 import com.apartment.interfaces.shared.response.CommonResponse;
+import com.apartment.interfaces.user.request.ChangePasswordRequest;
 import com.apartment.interfaces.user.request.UpdateProfileRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +29,16 @@ public class UserProfileController {
     public ResponseEntity<CommonResponse<UserResponse>> getMe() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(CommonResponse.ok(userQueryHandler.findByUsername(username)));
+    }
+
+    @Operation(summary = "Tự đổi mật khẩu (yêu cầu xác thực mật khẩu hiện tại)")
+    @PatchMapping("/me/change-password")
+    public ResponseEntity<CommonResponse<Void>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserResponse current = userQueryHandler.findByUsername(username);
+        userCommandHandler.changePassword(current.id(), request.currentPassword(), request.newPassword());
+        return ResponseEntity.ok(CommonResponse.ok("Đổi mật khẩu thành công", null));
     }
 
     @Operation(summary = "Cập nhật thông tin cá nhân")

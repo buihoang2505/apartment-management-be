@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<CommonResponse<Void>> handleIllegalArgument(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(CommonResponse.error(ex.getMessage()));
     }
 
@@ -112,6 +112,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse<Void>> handleGeneric(Exception ex) {
         log.error("Unhandled exception: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(CommonResponse.error("Lỗi hệ thống: " + ex.getMessage()));
+                .body(CommonResponse.error("Đã xảy ra lỗi hệ thống, vui lòng thử lại sau"));
     }
 }

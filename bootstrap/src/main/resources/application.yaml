@@ -42,6 +42,8 @@ app:
     audience: apartment-management-users
   upload:
     dir: ${UPLOAD_DIR:uploads}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173,http://localhost:5174}
 
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME:drozgbjpm}

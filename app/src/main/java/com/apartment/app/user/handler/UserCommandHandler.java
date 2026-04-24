@@ -1,5 +1,6 @@
 package com.apartment.app.user.handler;
 
+import com.apartment.app.auth.exception.InvalidCredentialsException;
 import com.apartment.app.user.command.*;
 import com.apartment.app.user.dto.UserResponse;
 import com.apartment.app.user.exception.UserNotFoundException;
@@ -71,6 +72,16 @@ public class UserCommandHandler {
         User user = userRepository.findById(cmd.userId())
                 .orElseThrow(() -> new UserNotFoundException(cmd.userId()));
         user.setPassword(passwordEncoder.encode(cmd.newPassword()));
+        userRepository.save(user);
+    }
+
+    public void changePassword(UUID userId, String currentPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 

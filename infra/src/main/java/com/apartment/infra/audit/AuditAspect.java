@@ -22,9 +22,8 @@ public class AuditAspect {
     private final AuditLogRepository auditLogRepository;
     private final UserRepository userRepository;
 
-    @Around("(execution(* com.apartment.app.*.handler.*CommandHandler.handle(..))" +
-            " || execution(* com.apartment.app.*.handler.*CommandHandler.delete*(..)))" +
-            " && !within(com.apartment.app.zone.handler.ZoneCommandHandler)")
+    @Around("execution(* com.apartment.app.*.handler.*CommandHandler.handle(..))" +
+            " || execution(* com.apartment.app.*.handler.*CommandHandler.delete*(..))")
     public Object auditCommand(ProceedingJoinPoint pjp) throws Throwable {
         String action = resolveAction(pjp);
         Object[] args = pjp.getArgs();

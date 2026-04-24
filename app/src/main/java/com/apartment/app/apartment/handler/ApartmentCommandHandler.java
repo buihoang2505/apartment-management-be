@@ -6,6 +6,7 @@ import com.apartment.app.apartment.dto.ApartmentResponse;
 import com.apartment.app.apartment.exception.ApartmentImageNotFoundException;
 import com.apartment.app.apartment.exception.ApartmentNotFoundException;
 import com.apartment.app.apartment.exception.DuplicateUnitCodeException;
+import com.apartment.app.shared.port.NotificationPort;
 import com.apartment.app.zone.exception.BuildingNotFoundException;
 import com.apartment.domain.apartment.*;
 import com.apartment.domain.user.User;
@@ -32,6 +33,7 @@ public class ApartmentCommandHandler {
     private final BuildingRepository buildingRepository;
     private final ApartmentStatusHistoryRepository statusHistoryRepository;
     private final UserRepository userRepository;
+    private final NotificationPort notificationPort;
 
     public ApartmentResponse handle(CreateApartmentCommand cmd) {
         if (apartmentRepository.existsByUnitCode(cmd.unitCode())) {
@@ -68,6 +70,11 @@ public class ApartmentCommandHandler {
 
         Apartment saved = apartmentRepository.save(apartment);
         recordHistory(saved, null, saved.getStatus(), "Tạo mới căn hộ");
+        notificationPort.push(
+                "Căn hộ mới",
+                "Căn hộ " + saved.getUnitCode() + " vừa được thêm vào hệ thống",
+                "APARTMENT",
+                saved.getId().toString());
         return ApartmentResponse.from(saved);
     }
 

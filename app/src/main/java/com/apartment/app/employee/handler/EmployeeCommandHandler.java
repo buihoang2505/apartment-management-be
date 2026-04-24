@@ -6,6 +6,7 @@ import com.apartment.app.employee.command.DeleteEmployeeCommand;
 import com.apartment.app.employee.command.UpdateEmployeeCommand;
 import com.apartment.app.employee.dto.EmployeeResponse;
 import com.apartment.app.employee.exception.EmployeeNotFoundException;
+import com.apartment.app.shared.port.NotificationPort;
 import com.apartment.domain.department.DepartmentRepository;
 import com.apartment.domain.employee.Employee;
 import com.apartment.domain.employee.EmployeeRepository;
@@ -19,6 +20,7 @@ public class EmployeeCommandHandler {
 
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
+    private final NotificationPort notificationPort;
 
     @Transactional
     public EmployeeResponse handle(CreateEmployeeCommand cmd) {
@@ -35,7 +37,13 @@ public class EmployeeCommandHandler {
             builder.department(department);
         }
 
-        return EmployeeResponse.from(employeeRepository.save(builder.build()));
+        Employee saved = employeeRepository.save(builder.build());
+        notificationPort.push(
+                "Nhân viên mới",
+                "Nhân viên " + saved.getFullName() + " vừa được thêm vào hệ thống",
+                "EMPLOYEE",
+                saved.getId().toString());
+        return EmployeeResponse.from(saved);
     }
 
     @Transactional
