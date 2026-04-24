@@ -2,13 +2,9 @@ package com.apartment.app.user.command;
 
 import java.util.UUID;
 
-public record UpdateUserCommand(
-        UUID id,
+public record UpdateProfileCommand(
+        UUID userId,
         String fullName,
-        String email,
-        String phone,
-        String role,
-        boolean active,
         String headline,
         String biography,
         String language,

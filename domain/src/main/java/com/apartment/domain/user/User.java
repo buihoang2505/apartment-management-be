@@ -35,4 +35,31 @@ public class User extends BaseEntity {
 
     @Column(name = "avatar_url", length = 500)
     private String avatarUrl;
+
+    @Column(name = "headline", length = 60)
+    private String headline;
+
+    @Column(name = "biography", columnDefinition = "TEXT")
+    private String biography;
+
+    @Column(name = "language", length = 10)
+    private String language;
+
+    @Column(name = "website", length = 500)
+    private String website;
+
+    @Column(name = "facebook", length = 255)
+    private String facebook;
+
+    @Column(name = "instagram", length = 255)
+    private String instagram;
+
+    @Column(name = "linkedin", length = 500)
+    private String linkedin;
+
+    @Column(name = "tiktok", length = 255)
+    private String tiktok;
+
+    @Column(name = "github", length = 255)
+    private String github;
 }

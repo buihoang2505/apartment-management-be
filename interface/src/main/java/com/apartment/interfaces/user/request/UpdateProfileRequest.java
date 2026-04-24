@@ -1,16 +1,7 @@
 package com.apartment.interfaces.user.request;
 
-import jakarta.validation.constraints.Pattern;
-
-public record UpdateUserRequest(
+public record UpdateProfileRequest(
         String fullName,
-        String email,
-        String phone,
-
-        @Pattern(regexp = "^(ADMIN|MANAGER)$", message = "Role phải là ADMIN hoặc MANAGER")
-        String role,
-
-        boolean active,
         String headline,
         String biography,
         String language,

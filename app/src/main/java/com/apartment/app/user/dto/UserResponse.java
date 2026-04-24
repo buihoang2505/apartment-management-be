@@ -14,7 +14,16 @@ public record UserResponse(
         String role,
         boolean active,
         String avatarUrl,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        String headline,
+        String biography,
+        String language,
+        String website,
+        String facebook,
+        String instagram,
+        String linkedin,
+        String tiktok,
+        String github
 ) {
     public static UserResponse from(User user) {
         return new UserResponse(
@@ -26,7 +35,16 @@ public record UserResponse(
                 user.getRole(),
                 user.isActive(),
                 user.getAvatarUrl(),
-                user.getCreatedAt()
+                user.getCreatedAt(),
+                user.getHeadline(),
+                user.getBiography(),
+                user.getLanguage(),
+                user.getWebsite(),
+                user.getFacebook(),
+                user.getInstagram(),
+                user.getLinkedin(),
+                user.getTiktok(),
+                user.getGithub()
         );
     }
 }

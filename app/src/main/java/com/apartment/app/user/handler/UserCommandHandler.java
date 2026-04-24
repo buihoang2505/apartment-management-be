@@ -45,6 +45,15 @@ public class UserCommandHandler {
         user.setPhone(cmd.phone());
         if (cmd.role() != null) user.setRole(cmd.role());
         user.setActive(cmd.active());
+        user.setHeadline(cmd.headline());
+        user.setBiography(cmd.biography());
+        user.setLanguage(cmd.language());
+        user.setWebsite(cmd.website());
+        user.setFacebook(cmd.facebook());
+        user.setInstagram(cmd.instagram());
+        user.setLinkedin(cmd.linkedin());
+        user.setTiktok(cmd.tiktok());
+        user.setGithub(cmd.github());
         return UserResponse.from(userRepository.save(user));
     }
 
@@ -63,6 +72,22 @@ public class UserCommandHandler {
                 .orElseThrow(() -> new UserNotFoundException(cmd.userId()));
         user.setPassword(passwordEncoder.encode(cmd.newPassword()));
         userRepository.save(user);
+    }
+
+    public UserResponse handleProfile(UpdateProfileCommand cmd) {
+        User user = userRepository.findById(cmd.userId())
+                .orElseThrow(() -> new UserNotFoundException(cmd.userId()));
+        user.setFullName(cmd.fullName());
+        user.setHeadline(cmd.headline());
+        user.setBiography(cmd.biography());
+        user.setLanguage(cmd.language());
+        user.setWebsite(cmd.website());
+        user.setFacebook(cmd.facebook());
+        user.setInstagram(cmd.instagram());
+        user.setLinkedin(cmd.linkedin());
+        user.setTiktok(cmd.tiktok());
+        user.setGithub(cmd.github());
+        return UserResponse.from(userRepository.save(user));
     }
 
     public UserResponse updateAvatar(UUID id, String avatarUrl) {

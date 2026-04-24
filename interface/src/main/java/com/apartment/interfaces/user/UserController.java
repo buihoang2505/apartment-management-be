@@ -62,7 +62,9 @@ public class UserController {
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateUserRequest request) {
         UpdateUserCommand cmd = new UpdateUserCommand(
-                id, request.fullName(), request.email(), request.phone(), request.role(), request.active());
+                id, request.fullName(), request.email(), request.phone(), request.role(), request.active(),
+                request.headline(), request.biography(), request.language(), request.website(),
+                request.facebook(), request.instagram(), request.linkedin(), request.tiktok(), request.github());
         return ResponseEntity.ok(CommonResponse.ok("Cập nhật người dùng thành công", userCommandHandler.handle(cmd)));
     }
 
