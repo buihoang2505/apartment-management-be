@@ -59,12 +59,19 @@ public class DashboardQueryHandler {
 
         Double percentage;
         String label;
-        if (lastMonth == 0) {
+        if (lastMonth == 0 && thisMonth == 0) {
+            // Cả hai tháng đều không có dữ liệu
+            percentage = null;
+            label = "Chưa có dữ liệu";
+        } else if (lastMonth == 0) {
+            // Tháng trước chưa có dữ liệu → không thể tính %
             percentage = null;
             label = "Chưa có dữ liệu tháng trước";
         } else {
             percentage = Math.round(((double) (thisMonth - lastMonth) / lastMonth) * 100 * 10.0) / 10.0;
-            label = percentage >= 0 ? "Tăng so với tháng trước" : "Giảm so với tháng trước";
+            label = percentage > 0 ? "Tăng so với tháng trước"
+                  : percentage < 0 ? "Giảm so với tháng trước"
+                  : "Không thay đổi so với tháng trước";
         }
 
         return new DashboardStatsResponse(total, byStatus, byType,
