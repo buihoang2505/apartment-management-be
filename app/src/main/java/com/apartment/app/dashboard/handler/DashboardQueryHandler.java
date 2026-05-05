@@ -1,80 +1,71 @@
 package com.apartment.app.dashboard.handler;
 
 import com.apartment.app.dashboard.dto.DashboardStatsResponse;
-import com.apartment.domain.apartment.ApartmentRepository;
+import com.apartment.app.dashboard.dto.GrowthTrend;
+import com.apartment.domain.apartment.ApartmentStatus;
+import com.apartment.domain.apartment.ApartmentType;
+import com.apartment.domain.dashboard.DashboardReadRepository;
+import com.apartment.domain.dashboard.DashboardStatsProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.YearMonth;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
+import java.time.YearMonth;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class DashboardQueryHandler {
 
-    private final ApartmentRepository apartmentRepository;
+    private final DashboardReadRepository dashboardReadRepository;
 
     public DashboardStatsResponse getStats(UUID zoneId) {
-        boolean filtered = zoneId != null;
+        var current = MonthRange.of(YearMonth.now());
+        var previous = MonthRange.of(YearMonth.now().minusMonths(1));
 
-        long total = filtered
-                ? apartmentRepository.countByZoneId(zoneId)
-                : apartmentRepository.count();
+        DashboardStatsProjection p = dashboardReadRepository.aggregate(
+                zoneId,
+                current.from(), current.toExclusive(),
+                previous.from(), previous.toExclusive()
+        );
 
-        Map<String, Long> byStatus = new HashMap<>();
-        for (Object[] row : filtered
-                ? apartmentRepository.countByStatusAndZoneId(zoneId)
-                : apartmentRepository.countByStatus()) {
-            byStatus.put(row[0].toString(), (Long) row[1]);
-        }
+        Map<ApartmentStatus, Long> byStatus = new EnumMap<>(ApartmentStatus.class);
+        byStatus.put(ApartmentStatus.DANG_BAN, p.getDangBan());
+        byStatus.put(ApartmentStatus.DA_COC, p.getDaCoc());
+        byStatus.put(ApartmentStatus.DA_BAN, p.getDaBan());
+        byStatus.put(ApartmentStatus.GIU_CHO, p.getGiuCho());
+        byStatus.put(ApartmentStatus.KHOA, p.getKhoa());
 
-        Map<String, Long> byType = new HashMap<>();
-        for (Object[] row : filtered
-                ? apartmentRepository.countByTypeAndZoneId(zoneId)
-                : apartmentRepository.countByType()) {
-            byType.put(row[0].toString(), (Long) row[1]);
-        }
+        Map<ApartmentType, Long> byType = new EnumMap<>(ApartmentType.class);
+        byType.put(ApartmentType.STUDIO, p.getStudio());
+        byType.put(ApartmentType.ONE_BEDROOM, p.getOneBedroom());
+        byType.put(ApartmentType.TWO_BEDROOM, p.getTwoBedroom());
+        byType.put(ApartmentType.TWO_BEDROOM_PLUS, p.getTwoBedroomPlus());
+        byType.put(ApartmentType.THREE_BEDROOM, p.getThreeBedroom());
+        byType.put(ApartmentType.THREE_BEDROOM_PLUS, p.getThreeBedroomPlus());
+        byType.put(ApartmentType.PENTHOUSE, p.getPenthouse());
+        byType.put(ApartmentType.DUPLEX, p.getDuplex());
+        byType.put(ApartmentType.OTHER, p.getOther());
 
-        YearMonth current = YearMonth.now();
-        YearMonth previous = current.minusMonths(1);
+        var growth = computeGrowth(p.getThisMonth(), p.getLastMonth());
 
-        long thisMonth = filtered
-                ? apartmentRepository.countByZoneIdAndCreatedBetween(zoneId,
-                        current.atDay(1).atStartOfDay(),
-                        current.atEndOfMonth().atTime(23, 59, 59))
-                : apartmentRepository.countCreatedBetween(
-                        current.atDay(1).atStartOfDay(),
-                        current.atEndOfMonth().atTime(23, 59, 59));
-        long lastMonth = filtered
-                ? apartmentRepository.countByZoneIdAndCreatedBetween(zoneId,
-                        previous.atDay(1).atStartOfDay(),
-                        previous.atEndOfMonth().atTime(23, 59, 59))
-                : apartmentRepository.countCreatedBetween(
-                        previous.atDay(1).atStartOfDay(),
-                        previous.atEndOfMonth().atTime(23, 59, 59));
+        return new DashboardStatsResponse(p.getTotal(), byStatus, byType, growth);
+    }
 
-        Double percentage;
-        String label;
+    private DashboardStatsResponse.GrowthStats computeGrowth(long thisMonth, long lastMonth) {
         if (lastMonth == 0 && thisMonth == 0) {
-            // Cả hai tháng đều không có dữ liệu
-            percentage = null;
-            label = "Chưa có dữ liệu";
-        } else if (lastMonth == 0) {
-            // Tháng trước chưa có dữ liệu → không thể tính %
-            percentage = null;
-            label = "Chưa có dữ liệu tháng trước";
-        } else {
-            percentage = Math.round(((double) (thisMonth - lastMonth) / lastMonth) * 100 * 10.0) / 10.0;
-            label = percentage > 0 ? "Tăng so với tháng trước"
-                  : percentage < 0 ? "Giảm so với tháng trước"
-                  : "Không thay đổi so với tháng trước";
+            return new DashboardStatsResponse.GrowthStats(thisMonth, lastMonth, null, GrowthTrend.NO_DATA);
         }
-
-        return new DashboardStatsResponse(total, byStatus, byType,
-                new DashboardStatsResponse.GrowthStats(thisMonth, lastMonth, percentage, label));
+        if (lastMonth == 0) {
+            return new DashboardStatsResponse.GrowthStats(thisMonth, lastMonth, null, GrowthTrend.NO_PREVIOUS);
+        }
+        double percentage = Math.round(((double) (thisMonth - lastMonth) / lastMonth) * 1000.0) / 10.0;
+        GrowthTrend trend = percentage > 0 ? GrowthTrend.UP
+                          : percentage < 0 ? GrowthTrend.DOWN
+                          : GrowthTrend.FLAT;
+        return new DashboardStatsResponse.GrowthStats(thisMonth, lastMonth, percentage, trend);
     }
 }
