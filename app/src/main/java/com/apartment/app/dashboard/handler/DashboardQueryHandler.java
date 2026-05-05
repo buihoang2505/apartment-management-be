@@ -7,6 +7,7 @@ import com.apartment.domain.apartment.ApartmentType;
 import com.apartment.domain.dashboard.DashboardReadRepository;
 import com.apartment.domain.dashboard.DashboardStatsProjection;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class DashboardQueryHandler {
 
     private final DashboardReadRepository dashboardReadRepository;
 
+    @Cacheable(value = "dashboard.stats", key = "#zoneId == null ? 'ALL' : #zoneId.toString()")
     public DashboardStatsResponse getStats(UUID zoneId) {
         var current = MonthRange.of(YearMonth.now());
         var previous = MonthRange.of(YearMonth.now().minusMonths(1));

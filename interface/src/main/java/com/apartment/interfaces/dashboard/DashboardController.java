@@ -1,6 +1,5 @@
 package com.apartment.interfaces.dashboard;
 
-import com.apartment.app.dashboard.dto.DashboardStatsResponse;
 import com.apartment.app.dashboard.handler.DashboardQueryHandler;
 import com.apartment.interfaces.shared.response.CommonResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,8 +18,9 @@ public class DashboardController {
     private final DashboardQueryHandler dashboardQueryHandler;
 
     @GetMapping("/stats")
-    public ResponseEntity<CommonResponse<DashboardStatsResponse>> getStats(
+    public ResponseEntity<CommonResponse<DashboardStatsView>> getStats(
             @RequestParam(value = "zoneId", required = false) UUID zoneId) {
-        return ResponseEntity.ok(CommonResponse.ok(dashboardQueryHandler.getStats(zoneId)));
+        var view = DashboardStatsView.from(dashboardQueryHandler.getStats(zoneId));
+        return ResponseEntity.ok(CommonResponse.ok(view));
     }
 }

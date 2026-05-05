@@ -35,6 +35,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers("/ws/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
@@ -43,7 +44,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/departments/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/employees/**").authenticated()
                 .requestMatchers("/audit-logs", "/audit-logs/**").authenticated()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(
                         "/swagger-ui/**",
                         "/swagger-ui.html",
