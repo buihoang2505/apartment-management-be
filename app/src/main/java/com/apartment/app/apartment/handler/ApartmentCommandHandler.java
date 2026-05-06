@@ -158,6 +158,27 @@ public class ApartmentCommandHandler {
         return apartment.getImages().stream().map(ApartmentImageResponse::from).toList();
     }
 
+    public List<ApartmentImageResponse> reorderImages(UUID apartmentId, List<UUID> imageIds) {
+        Apartment apartment = apartmentRepository.findById(apartmentId)
+                .orElseThrow(() -> new ApartmentNotFoundException(apartmentId));
+        java.util.Map<UUID, ApartmentImage> byId = new java.util.HashMap<>();
+        for (ApartmentImage img : apartment.getImages()) {
+            byId.put(img.getId(), img);
+        }
+        int order = 0;
+        for (UUID imageId : imageIds) {
+            ApartmentImage img = byId.get(imageId);
+            if (img != null) {
+                img.setSortOrder(order++);
+            }
+        }
+        apartmentRepository.save(apartment);
+        return apartment.getImages().stream()
+                .sorted(java.util.Comparator.comparingInt(ApartmentImage::getSortOrder))
+                .map(ApartmentImageResponse::from)
+                .toList();
+    }
+
     public void deleteImage(UUID apartmentId, UUID imageId) {
         ApartmentImage image = apartmentImageRepository.findByIdAndApartment_Id(imageId, apartmentId)
                 .orElseThrow(() -> new ApartmentImageNotFoundException(imageId));

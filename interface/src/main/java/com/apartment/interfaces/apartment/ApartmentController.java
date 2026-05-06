@@ -126,6 +126,18 @@ public class ApartmentController {
                         apartmentCommandHandler.addImages(id, urls)));
     }
 
+    @Operation(summary = "Sắp xếp lại thứ tự ảnh căn hộ")
+    @PatchMapping("/{id}/images/order")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    public ResponseEntity<CommonResponse<List<ApartmentImageResponse>>> reorderImages(
+            @PathVariable("id") UUID id,
+            @RequestBody ReorderImagesRequest request) {
+        return ResponseEntity.ok(CommonResponse.ok("Cập nhật thứ tự ảnh thành công",
+                apartmentCommandHandler.reorderImages(id, request.imageIds())));
+    }
+
+    public record ReorderImagesRequest(List<UUID> imageIds) {}
+
     @Operation(summary = "Xóa ảnh căn hộ")
     @DeleteMapping("/{id}/images/{imageId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
