@@ -6,6 +6,7 @@ import com.apartment.interfaces.shared.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,17 @@ public class NotificationController {
     @GetMapping
     public ResponseEntity<CommonResponse<List<NotificationResponse>>> getAll() {
         return ResponseEntity.ok(CommonResponse.ok(notificationQueryHandler.getLatest()));
+    }
+
+    @Operation(summary = "Lấy thông báo có phân trang & lọc")
+    @GetMapping("/page")
+    public ResponseEntity<CommonResponse<Page<NotificationResponse>>> getPage(
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "unreadOnly", defaultValue = "false") boolean unreadOnly,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size) {
+        return ResponseEntity.ok(CommonResponse.ok(
+                notificationQueryHandler.getPage(type, unreadOnly, page, size)));
     }
 
     @Operation(summary = "Đánh dấu một thông báo đã đọc")
