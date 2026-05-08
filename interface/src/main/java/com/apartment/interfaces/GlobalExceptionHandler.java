@@ -5,6 +5,10 @@ import com.apartment.app.apartment.exception.DuplicateUnitCodeException;
 import com.apartment.app.auth.exception.InvalidCredentialsException;
 import com.apartment.app.department.exception.DepartmentNotFoundException;
 import com.apartment.app.department.exception.DuplicateDepartmentCodeException;
+import com.apartment.app.booking.exception.BookingNotFoundException;
+import com.apartment.app.contract.exception.ContractNotFoundException;
+import com.apartment.app.contract.exception.PaymentScheduleNotFoundException;
+import com.apartment.app.customer.exception.CustomerNotFoundException;
 import com.apartment.app.employee.exception.EmployeeNotFoundException;
 import com.apartment.app.portfolio.exception.PortfolioNotFoundException;
 import com.apartment.app.user.exception.UserNotFoundException;
@@ -22,6 +26,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,7 +44,11 @@ public class GlobalExceptionHandler {
             PortfolioNotFoundException.class,
             UserNotFoundException.class,
             DepartmentNotFoundException.class,
-            EmployeeNotFoundException.class
+            EmployeeNotFoundException.class,
+            CustomerNotFoundException.class,
+            ContractNotFoundException.class,
+            PaymentScheduleNotFoundException.class,
+            BookingNotFoundException.class
     })
     public ResponseEntity<CommonResponse<Void>> handleNotFound(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -66,6 +75,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<CommonResponse<Void>> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(CommonResponse.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<CommonResponse<Void>> handleIllegalState(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(CommonResponse.error(ex.getMessage()));
     }
 
@@ -104,6 +119,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse<Void>> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(CommonResponse.error("Bạn không có quyền thực hiện thao tác này"));
+    }
+
+    // ── 404 Not Found (route không tồn tại) ──────────────────────────────────
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<CommonResponse<Void>> handleNoResource(NoResourceFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(CommonResponse.error("Endpoint không tồn tại: " + ex.getResourcePath()));
     }
 
     // ── 500 Internal Server Error ─────────────────────────────────────────────

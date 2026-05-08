@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .requestMatchers("/ws/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/apartments/types").permitAll()
+                .requestMatchers(HttpMethod.POST, "/public/leads").permitAll()
                 .requestMatchers("/notifications", "/notifications/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/departments/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/employees/**").authenticated()
